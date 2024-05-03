@@ -29,7 +29,7 @@ export const BookSearch = () => {
   };
   return (
     <div className="p-4">
-      <div className="sm:max-w-s">
+      <div className="sm:max-w-xs">
         <Input
           type="text"
           value={query}
