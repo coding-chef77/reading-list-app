@@ -14,12 +14,16 @@ import {
 export type Book = {
   key: string;
   title: string;
-  author_name: string;
+  author_name: string[];
   first_publish_year: string;
-  number_of_pages_median: string;
+  number_of_pages_median: string | null;
   status: "done" | "inProgress" | "backlog";
 };
-export const BookSearch = () => {
+export const BookSearch = ({
+  onAddBook,
+}: {
+  onAddBook: (book: Book) => void;
+}) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +67,10 @@ export const BookSearch = () => {
       searchBooks(currentPage + 1);
     }
   };
+
+  const startIndex = (currentPage - 1) * resultsPerPage + 1;
+  const endIndex = Math.min(startIndex + resultsPerPage - 1, totalResults);
+
   return (
     <div className="p-4">
       <div className="sm:max-w-xs">
@@ -77,6 +85,13 @@ export const BookSearch = () => {
       <Button onClick={() => searchBooks()} disabled={isLoading}>
         {isLoading ? "Søker..." : "Søk"}
       </Button>
+      <div className="mt-2">
+        {totalResults > 0 && (
+          <p className="text-sm">
+            Viser {startIndex} - {endIndex} av {totalResults} resultater
+          </p>
+        )}
+      </div>
       <div className="mt-4 max-h-64 overflow-auto">
         <Table>
           <TableHeader>
@@ -94,6 +109,24 @@ export const BookSearch = () => {
                 <TableCell>{book.author_name}</TableCell>
                 <TableCell>{book.first_publish_year}</TableCell>
                 <TableCell>{book.number_of_pages_median || "-"}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      onAddBook({
+                        key: book.key,
+                        title: book.title,
+                        author_name: book.author_name,
+                        first_publish_year: book.first_publish_year,
+                        number_of_pages_median:
+                          book.number_of_pages_median || null,
+                        status: "backlog",
+                      })
+                    }
+                  >
+                    Legg til
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -107,11 +140,13 @@ export const BookSearch = () => {
         >
           Tilbake
         </Button>
-        <span>{currentPage}</span>
+        <span>Side {currentPage}</span>
         <Button
           variant="outline"
           onClick={handleNextClick}
-          disabled={currentPage > Math.ceil(totalResults / resultsPerPage)}
+          disabled={
+            currentPage > Math.ceil(totalResults / resultsPerPage) || isLoading
+          }
         >
           Neste
         </Button>
