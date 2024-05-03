@@ -3,7 +3,7 @@ import { BookSearch } from "./components/BookSearch";
 
 const App = () => {
   return (
-    <div>
+    <div className="container mx-auto">
       <BookSearch />
     </div>
   );
