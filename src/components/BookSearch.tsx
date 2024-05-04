@@ -100,6 +100,7 @@ export const BookSearch = ({
               <TableHead className="p-2">Forfatter</TableHead>
               <TableHead className="p-2">Utgitt år</TableHead>
               <TableHead className="p-2">Antall sider</TableHead>
+              <TableHead className="p-2"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
