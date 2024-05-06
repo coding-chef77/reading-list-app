@@ -1,4 +1,5 @@
-import { Book } from "./BookSearch";
+import { useStore, Book } from "@/store";
+
 import { Button } from "./ui/button";
 import {
   Card,
@@ -8,26 +9,23 @@ import {
   CardTitle,
 } from "./ui/card";
 
-export const BookList = ({
-  books,
-  onMoveBook,
-  onRemoveBook,
-}: {
-  books: Book[];
-  onMoveBook: (book: Book, targetList: Book["status"]) => void;
-  onRemoveBook: (book: Book) => void;
-}) => {
+export const BookList = () => {
+  const { books, removeBook, moveBook } = useStore((state) => state);
   const moveToList = (book: Book, targetList: Book["status"]) => {
-    onMoveBook(book, targetList);
+    moveBook(book, targetList);
   };
-  const renderBookItem = (book: Book, index: number, listType: string) => (
+  const renderBookItem = (
+    book: Book,
+    index: number,
+    listType: Book["status"]
+  ) => (
     <Card key={index}>
       <CardHeader>
         <CardTitle>{book.title}</CardTitle>
         <CardDescription>{book.author_name}</CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Button variant="destructive" onClick={() => onRemoveBook(book)}>
+        <Button variant="destructive" onClick={() => removeBook(book)}>
           Remove
         </Button>
         <div className="inline-flex gap-2">
