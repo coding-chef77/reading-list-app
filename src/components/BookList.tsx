@@ -8,15 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import {
-  DragDropContext,
-  Draggable,
-  DropResult,
-  DroppableProvided,
-  DroppableStateSnapshot,
-} from "react-beautiful-dnd";
+import { DragDropContext, Draggable, DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StricktModeDroppable";
-import { ReactElement, JSXElementConstructor } from "react";
 
 export const BookList = () => {
   const { books, removeBook, moveBook, reorderBooks } = useStore(
