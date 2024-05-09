@@ -135,47 +135,63 @@ export const BookList = () => {
 
   return (
     <div className="space-y-8 p-4">
-      <h2 className="mb-4 text-2xl font-bold">Leseliste</h2>
-      <div className="h-full">
-        <SearchDialog>
-          <BookSearch />
-        </SearchDialog>
+      <div className="flex gap-2 max-sm:flex-col sm:items-center sm:justify-between">
+        <h2 className="mb-4 text-2xl font-bold">Leseliste</h2>
+        <div className="h-full">
+          <SearchDialog>
+            <BookSearch />
+          </SearchDialog>
+        </div>
       </div>
+      <h3 className="my-2 flex items-end gap-2 text-xl font-semibold">
+        Leses nå
+        <GiBookmarklet className="size-6" />
+      </h3>
       <DragDropContext onDragEnd={onDragEnd}>
-        {books.filter((book) => book.status === "inProgress").length > 0 && (
-          <>
-            <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
-              Leses nå
-              <GiBookmarklet className="size-6" />
-            </h3>
-            {renderDraggableBookList("inProgress")}
-          </>
-        )}
+        <div className="rounded-lg border bg-muted p-4">
+          {books.filter((book) => book.status === "inProgress").length > 0 ? (
+            <>{renderDraggableBookList("inProgress")}</>
+          ) : (
+            <div className="p-4">
+              <p className="text-primary">
+                Den som aldri setter seg, kommer ingen vei
+              </p>
+            </div>
+          )}
+        </div>
       </DragDropContext>
+      <h3 className="my-2 flex items-end gap-2 text-xl font-semibold">
+        Venteliste
+        <GiBookPile className="size-7" />
+      </h3>
       <DragDropContext onDragEnd={onDragEnd}>
-        {books.filter((book) => book.status === "backlog").length > 0 && (
-          <>
-            <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
-              Venteliste
-              <GiBookPile className="size-7" />
-            </h3>
-            {renderDraggableBookList("backlog")}
-          </>
-        )}
+        <div className="rounded-lg border bg-muted p-4">
+          {books.filter((book) => book.status === "backlog").length > 0 ? (
+            renderDraggableBookList("backlog")
+          ) : (
+            <div className="p-4">
+              <p className="text-primary">Se deg for før du hopper</p>
+            </div>
+          )}
+        </div>
       </DragDropContext>
-      {books.filter((book) => book.status === "done").length > 0 && (
-        <>
-          <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
-            Ferdig
-            <GiBookshelf className="size-6 pb-0.5" />
-          </h3>
-          <div>
+      <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
+        Ferdig
+        <GiBookshelf className="size-6 pb-0.5" />
+      </h3>
+      <div className="rounded-lg border bg-muted p-4">
+        {books.filter((book) => book.status === "done").length > 0 ? (
+          <>
             {books
               .filter((book) => book.status === "done")
               .map((book, index) => renderBookItem(book, index, "done"))}
+          </>
+        ) : (
+          <div className="p-4">
+            <p className="text-primary">Handling er bedre enn ord</p>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
