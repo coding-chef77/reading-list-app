@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Book, useStore } from "@/store";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 
 export const BookSearch = () => {
   const { books, addBook } = useStore((state) => state);
@@ -90,32 +91,34 @@ export const BookSearch = () => {
             )}
           </Button>
         </div>
-        {/* <div className="mt-2">
-          {totalResults > 0 && (
-            <p className="text-sm">
-              Viser {startIndex} - {endIndex} av {totalResults} resultater
-            </p>
-          )}
-        </div> */}
+
         <div className="mt-4 max-h-64 overflow-auto">
           {query.length > 0 && results.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="p-2">Tittel</TableHead>
-                  <TableHead className="p-2">Forfatter</TableHead>
-                  <TableHead className="p-2">Utgitt år</TableHead>
-                  <TableHead className="p-2">Antall sider</TableHead>
-                  <TableHead className="p-2"></TableHead>
+                  <TableHead>Tittel</TableHead>
+                  <TableHead>Forfatter</TableHead>
+                  <TableHead className="hidden sm:table-cell">
+                    Utgitt år
+                  </TableHead>
+                  <TableHead className="hidden sm:table-cell">
+                    Antall sider
+                  </TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="overflow-y-auto">
                 {results.map((book, index) => (
                   <TableRow key={index}>
                     <TableCell>{book.title}</TableCell>
                     <TableCell>{book.author_name}</TableCell>
-                    <TableCell>{book.first_publish_year}</TableCell>
-                    <TableCell>{book.number_of_pages_median || "-"}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {book.first_publish_year}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {book.number_of_pages_median || "-"}
+                    </TableCell>
                     <TableCell>
                       <Button
                         variant="link"
@@ -141,31 +144,110 @@ export const BookSearch = () => {
             </Table>
           ) : (
             <div className="flex max-h-60 items-center justify-center p-16">
-              <p>Start your search!</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                Sett i gang jakten på din neste bok!
+              </p>
             </div>
           )}
         </div>
-        <div className="mt-4 flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={handlePreviousClick}
-            disabled={currentPage <= 1 || isLoading}
-          >
-            Tilbake
-          </Button>
-          <span>Side {currentPage}</span>
-          <Button
-            variant="outline"
-            onClick={handleNextClick}
-            disabled={
-              currentPage > Math.ceil(totalResults / resultsPerPage) ||
-              isLoading
-            }
-          >
-            Neste
-          </Button>
+        <div className="flex w-full flex-col items-center gap-3 border-t border-gray-200 px-6 py-4 sm:flex-row sm:justify-between dark:border-gray-700">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {totalResults > 0 ? (
+              <>
+                Viser{" "}
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                  {" "}
+                  {startIndex} - {endIndex}
+                </span>{" "}
+                av{" "}
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                  {totalResults}
+                </span>{" "}
+                resultater
+              </>
+            ) : (
+              "0 resultater"
+            )}
+          </p>
+          <div className="inline-flex gap-x-2">
+            <Button
+              variant="outline"
+              onClick={handlePreviousClick}
+              disabled={currentPage <= 1 || isLoading}
+            >
+              <SlArrowLeft className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleNextClick}
+              disabled={
+                currentPage > Math.ceil(totalResults / resultsPerPage) ||
+                isLoading
+              }
+            >
+              <SlArrowRight className="size-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
+  );
+};
+
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+export const SearchDialog = ({ children }: { children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline">Add a new book</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-xl">
+          <DialogHeader>
+            <DialogTitle>Add a new book</DialogTitle>
+            <DialogDescription>
+              Make changes to your profile here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          {children}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Add a new book</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Add a new book</DrawerTitle>
+          <DrawerDescription>Search for a book</DrawerDescription>
+          {children}
+        </DrawerHeader>
+      </DrawerContent>
+    </Drawer>
   );
 };

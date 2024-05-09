@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { BookSearch } from "./components/BookSearch";
+
 import { BookList } from "./components/BookList";
 import { useStore } from "./store";
 import { Layout } from "./components/Layout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const App = () => {
   const { loadBooksFromLocalStorage } = useStore((state) => state);
@@ -13,8 +14,9 @@ const App = () => {
 
   return (
     <Layout>
-      <BookSearch />
-      <BookList />
+      <TooltipProvider>
+        <BookList />
+      </TooltipProvider>
     </Layout>
   );
 };
