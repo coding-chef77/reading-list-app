@@ -21,7 +21,7 @@ export const BookSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const resultsPerPage = 10;
+  const resultsPerPage = 40;
 
   type SearchResult = {
     docs: Book[];
